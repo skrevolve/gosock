@@ -1,4 +1,4 @@
-package udp
+package main
 
 import (
 	"bufio"
@@ -9,16 +9,13 @@ import (
 
 func main() {
 
-	port := ":8080"
-	protocol := "udp4"
-
-	udpAddr, err := net.ResolveUDPAddr(protocol, port)
+	udpServerAddr, err := net.ResolveUDPAddr("udp4", ":32452")
 	if err != nil {
 		os.Exit(1)
 	}
 
-	dial, err := net.DialUDP(protocol, nil, udpAddr)
-	// defer dial.Close()
+	udpServer, err := net.DialUDP("udp", nil, udpServerAddr)
+	defer udpServer.Close()
 	if err != nil {
 		os.Exit(2)
 	}
@@ -27,22 +24,21 @@ func main() {
 	scanner := bufio.NewScanner(os.Stdin)
 	for scanner.Scan() {
 		inputMessage = scanner.Text()
-		sendMessage(dial, inputMessage)
+		send(udpServer, inputMessage)
 	}
 
 	// os.Exit(0)
 }
 
-func sendMessage(dial *net.UDPConn, inputMessage string) {
-
+func send(dial *net.UDPConn, inputMessage string) {
 	dial.Write([]byte(inputMessage))
+}
 
+func recv(dial *net.UDPConn) {
 	var buffer[256]byte
 	n, err := dial.Read(buffer[0:])
 	if err != nil {
-		fmt.Println(err)
 		os.Exit(3)
 	}
-
 	fmt.Println("server: ", string(buffer[0:n]))
 }
