@@ -1,7 +1,7 @@
 package main
 
 type Packet interface {
-	serialize() []byte
+	Serialize() []byte
 }
 
 type Protocol interface {

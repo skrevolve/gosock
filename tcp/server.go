@@ -36,7 +36,7 @@ func (s *Server) Start(listener *net.TCPListener, acceptTimeout time.Duration) {
 	defer func() {
 		listener.Close()
 		s.waitGroup.Done()
-	}
+	}()
 
 	for {
 		select {
@@ -48,5 +48,20 @@ func (s *Server) Start(listener *net.TCPListener, acceptTimeout time.Duration) {
 		listener.SetDeadline(time.Now().Add(acceptTimeout))
 
 		conn, err := listener.AcceptTCP()
+		if err != nil {
+			continue
+		}
+
+		s.waitGroup.Add(1)
+		go func() {
+			newConn(conn, s).Do()
+			s.waitGroup.Done()
+		}()
 	}
+}
+
+// Stop stops services
+func (s *Server) Stop() {
+	close(s.exitChan)
+	s.waitGroup.Wait()
 }
