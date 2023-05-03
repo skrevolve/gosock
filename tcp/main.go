@@ -6,31 +6,33 @@ import (
 	"net"
 	"os"
 	"os/signal"
+	"runtime"
 	"syscall"
 	"time"
 )
 
 type Callback struct{}
 
-func (this *Callback) OnConnect(c *Conn) bool {
+func (t *Callback) OnConnect(c *Conn) bool {
 	addr := c.GetRawConn().RemoteAddr()
 	c.PutExtraData(addr)
 	fmt.Println("OnConnect:", addr)
 	return true
 }
 
-func (this *Callback) OnMessage(c *Conn, p Packet) bool {
+func (t *Callback) OnMessage(c *Conn, p Packet) bool {
 	echoPacket := p.(*EchoPacket)
 	fmt.Printf("OnMessage:[%v] [%v]\n", echoPacket.GetLength(), string(echoPacket.GetBody()))
 	c.AsyncWritePacket(NewEchoPacket(echoPacket.Serialize(), true), time.Second)
 	return true
 }
 
-func (this *Callback) OnClose(c *Conn) {
+func (t *Callback) OnClose(c *Conn) {
 	fmt.Println("OnClose:", c.GetExtraData())
 }
 
 func main() {
+	runtime.GOMAXPROCS(runtime.NumCPU())
 
 	// create tcp listener
 	tcpAddr, err := net.ResolveTCPAddr("tcp4", ":32452")

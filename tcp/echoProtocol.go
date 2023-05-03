@@ -11,20 +11,20 @@ type EchoPacket struct {
 	buff []byte
 }
 
-func (this *EchoPacket) Serialize() []byte {
-	return this.buff
+func (t *EchoPacket) Serialize() []byte {
+	return t.buff
 }
 
-func (this *EchoPacket) GetLength() uint16 {
-	return binary.BigEndian.Uint16(this.buff)
+func (t *EchoPacket) GetLength() uint16 {
+	return binary.BigEndian.Uint16(t.buff)
 }
 
-func (this *EchoPacket) GetId() uint16 {
-	return binary.BigEndian.Uint16(this.buff[2:])
+func (t *EchoPacket) GetId() uint16 {
+	return binary.BigEndian.Uint16(t.buff[2:])
 }
 
-func (this *EchoPacket) GetBody() []byte {
-	return this.buff[4:]
+func (t *EchoPacket) GetBody() []byte {
+	return t.buff[4:]
 }
 
 func NewEchoPacket(buff []byte, hasLengthField bool) *EchoPacket {
