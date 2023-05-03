@@ -1,4 +1,4 @@
-## Listening tcp packet network
+## TCP (4 layer packet listening)
 
 ```sh
 go build
