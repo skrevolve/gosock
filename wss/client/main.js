@@ -12,29 +12,28 @@ const rl = readline.createInterface({
 
 rl.on("line", (line) => {
 
-  console.log("input: ", line)
   clientMessage = line
 
-  socket.onopen = (e) => {
+  //socket.onopen = (e) => {
 
     socket.send(clientMessage)
 
-    socket.onmessage = (e) => {
-      console.debug("client received a message")
-      // console.debug(e)
-    }
+    // socket.onmessage = (e) => {
+    //   console.debug("client received a message")
+    //   // console.debug(e)
+    // }
 
-    socket.onclose = (e) => {
-      console.debug("client notified socket has closed")
-      // console.debug(e)
-    }
+    // socket.onclose = (e) => {
+    //   console.debug("client notified socket has closed")
+    //   // console.debug(e)
+    // }
 
-    socket.onerror = (e) => {
-      console.debug(e.message) // console.log(e)
-    }
+    // socket.onerror = (e) => {
+    //   console.debug(e.message) // console.log(e)
+    // }
 
     // socket.close()
-  }
+  //}
 
   // rl.close()
 })
