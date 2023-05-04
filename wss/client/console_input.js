@@ -19,10 +19,13 @@ socket.onopen = async () => console.log("socket connected..")
 
 rl.on("line", (line) => {
 
-  message = line
+  // message = line
 
   // socket.send(message)
-  socket.send(JSON.stringify(data))
+  socket.send(JSON.stringify({
+    email: line,
+    password: "12345!@#$%"
+  }))
 
   socket.onmessage = async (e) => {
     try {
@@ -37,10 +40,10 @@ rl.on("line", (line) => {
     // console.debug(e)
   }
 
-  socket.onclose = async (e) => {
-    console.debug("client notified socket has closed")
-    // console.debug(e)
-  }
+  // socket.onclose = async (e) => {
+  //   console.debug("client notified socket has closed")
+  //   // console.debug(e)
+  // }
 
   socket.onerror = async (e) => {
     console.debug(e.message)

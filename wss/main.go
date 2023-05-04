@@ -4,12 +4,17 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/goccy/go-json"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/websocket/v2"
 )
 
 func main() {
-	app := fiber.New()
+	app := fiber.New(fiber.Config{
+		// prefork: true,
+		JSONEncoder: json.Marshal,
+		JSONDecoder: json.Unmarshal,
+	})
 
 	app.Use("/", func(c *fiber.Ctx) error {
 		if websocket.IsWebSocketUpgrade(c) {
@@ -59,6 +64,14 @@ func UserLogin(c *websocket.Conn) {
 		Email    string `json:"email"`
 		Password string `json:"password"`
 	}
-	data := c.ReadJSON(body)
-	fmt.Println(data)
+	for {
+		if err := c.ReadJSON(&body); err != nil {
+			log.Println("client connection refused")
+			log.Println(err)
+			break
+		}
+		fmt.Println(body.Email)
+		fmt.Println(body.Password)
+		fmt.Println("=============")
+	}
 }
