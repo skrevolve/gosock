@@ -1,15 +1,17 @@
 package main
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/websocket/v2"
 )
+
 func main() {
 	app := fiber.New()
 
-	app.Use("/ws", func(c *fiber.Ctx) error {
+	app.Use("/", func(c *fiber.Ctx) error {
 		if websocket.IsWebSocketUpgrade(c) {
 			c.Locals("allowed", true)
 			return c.Next()
@@ -17,16 +19,18 @@ func main() {
 		return fiber.ErrUpgradeRequired
 	})
 
+	app.Get("/user/login", websocket.New(UserLogin))
+
 	app.Get("/ws/:id", websocket.New(func(c *websocket.Conn) {
 		// c.Locals is added to the *websocket.Conn
-		log.Println(c.Locals("allowed")) // true
-		log.Println(c.Params("id"))      // 123
-		log.Println(c.Query("v"))        // 1.0
-		log.Println(c.Cookies("session"))// ""
+		log.Println(c.Locals("allowed"))  // true
+		log.Println(c.Params("id"))       // 123
+		log.Println(c.Query("v"))         // 1.0
+		log.Println(c.Cookies("session")) // ""
 
 		// websocket.Conn bindings https://pkg.go.dev/github.com/fasthttp/websocket?tab=doc#pkg-index
 		var (
-			mt int
+			mt  int
 			msg []byte
 			err error
 		)
@@ -45,8 +49,16 @@ func main() {
 		}
 	}))
 
-
 	log.Fatal(app.Listen(":3000"))
 	// Access the websocket server: ws://localhost:3000/ws/123?v=1.0
 	// https://www.websocket.org/echo.html
+}
+
+func UserLogin(c *websocket.Conn) {
+	var body struct {
+		Email    string `json:"email"`
+		Password string `json:"password"`
+	}
+	data := c.ReadJSON(body)
+	fmt.Println(data)
 }
