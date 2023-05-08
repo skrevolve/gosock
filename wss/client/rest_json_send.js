@@ -3,7 +3,18 @@ const readline = require("readline")
 const loginUrl = "ws://localhost:3000/user/login"
 const socket = new WebSocket(loginUrl)
 
-socket.onopen = async () => console.log("socket connected..")
+const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+})
+
+socket.onopen = async (e) => {
+    try {
+        console.log("socket connected..")
+    } catch(e) {
+        console.log(e.message)
+    }
+}
 
 rl.on("line", (line) => {
 

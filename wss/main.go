@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"strings"
 
 	"github.com/goccy/go-json"
 	"github.com/gofiber/fiber/v2"
@@ -16,7 +17,7 @@ func main() {
 		JSONDecoder: json.Unmarshal,
 	})
 
-	app.Use("/", func(c *fiber.Ctx) error {
+	app.Use(func(c *fiber.Ctx) error {
 		if websocket.IsWebSocketUpgrade(c) {
 			c.Locals("allowed", true)
 			return c.Next()
@@ -60,18 +61,34 @@ func main() {
 }
 
 func UserLogin(c *websocket.Conn) {
-	var body struct {
+
+	var Request struct {
 		Email    string `json:"email"`
 		Password string `json:"password"`
 	}
+
 	for {
-		if err := c.ReadJSON(&body); err != nil {
-			log.Println("client connection refused")
-			log.Println(err)
+		if err := c.ReadJSON(&Request); err != nil {
+			log.Println("client connection closed")
 			break
 		}
-		fmt.Println(body.Email)
-		fmt.Println(body.Password)
-		fmt.Println("=============")
+
+		fmt.Println(Request)
+
+		res := fiber.Map{"message": "", "user_info_id": 0}
+		email := strings.ToLower(strings.TrimSpace(Request.Email))
+
+		if email == "test@naver.com" {
+			res = fiber.Map{
+				"message":      "hello " + email,
+				"user_info_id": 1234,
+			}
+		}
+
+		if err := c.WriteJSON(&res); err != nil {
+			log.Println("client connection closed")
+			break
+		}
+
 	}
 }

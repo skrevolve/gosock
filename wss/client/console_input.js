@@ -1,6 +1,6 @@
 const WebSocket = require("ws")
 const readline = require("readline")
-const loginUrl = "ws://localhost:3000/user/login"
+const loginUrl = "ws://localhost:3000/ws/123?v=1.0"
 const socket = new WebSocket(loginUrl)
 
 let message = ""
@@ -15,17 +15,6 @@ socket.onopen = async () => console.log("socket connected..")
 rl.on("line", (line) => {
   message = line
   socket.send(message)
-
-  socket.onmessage = async (e) => {
-    try {
-      if (e !== null && e !== undefined) {
-        const resData = await JSON.parse(e.data)
-        console.log(resData)
-      }
-    } catch (e) {
-      console.log(e.message)
-    }
-  }
 
   socket.onerror = async (e) => {
     console.debug(e.message)
