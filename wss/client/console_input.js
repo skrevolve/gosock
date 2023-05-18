@@ -12,8 +12,8 @@ const rl = readline.createInterface({
 
 socket.onopen = async () => console.log("socket connected..")
 
-rl.on("line", (line) => {
-  message = line
+rl.on("line", (input_msg) => {
+  message = input_msg
   socket.send(message)
 
   socket.onerror = async (e) => {

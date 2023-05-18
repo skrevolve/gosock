@@ -8,19 +8,13 @@ const rl = readline.createInterface({
     output: process.stdout,
 })
 
-socket.onopen = async (e) => {
-    try {
-        console.log("socket connected..")
-    } catch(e) {
-        console.log(e.message)
-    }
-}
+socket.onopen = async (e) => console.log("socket connected..")
 
-rl.on("line", (line) => {
+rl.on("line", (input_email) => {
 
     socket.send(JSON.stringify({
-        email: line,
-        password: "12345!@#$%"
+        email: input_email,
+        password: Math.random().toString(36).slice(2)
     }))
 
     socket.onmessage = async (e) => {

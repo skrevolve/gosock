@@ -1,4 +1,0 @@
-## gRPC
-```sh
-go run
-```
