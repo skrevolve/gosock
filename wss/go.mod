@@ -4,7 +4,7 @@ go 1.20
 
 require (
 	github.com/goccy/go-json v0.10.2
-	github.com/gofiber/fiber/v2 v2.49.2
+	github.com/gofiber/fiber/v2 v2.44.0
 	github.com/gofiber/websocket/v2 v2.1.6
 )
 
